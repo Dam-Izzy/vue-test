@@ -1,6 +1,7 @@
 <template>
+  <Modal></Modal>
   <v-card>
-    <v-toolbar color="primary">
+    <v-toolbar color="green">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
       <v-toolbar-title>Tablero principal</v-toolbar-title>
@@ -32,6 +33,7 @@
     </v-toolbar>
 
     <v-window v-model="tab">
+   
       <v-window-item
         v-for="item in itemsTab"
         :key="item"
@@ -44,18 +46,24 @@
               :headers="headers"
               :items="items"
               :search="search"
-              item-value="name"
+              :item-value="name"
+              
             >
+            
               <template v-slot:top>
                 <v-text-field
                   v-model="search"
                   class="pa-2"
                   label="Search"
-                ></v-text-field>
+                >
+                
+              </v-text-field>
               </template>
+              
             </v-data-table>
 
         </v-card>
+        
       </v-window-item>
     </v-window>
   </v-card>
@@ -69,7 +77,7 @@
       return {
         tab: null,
         itemsTab: [
-          'Consulta', 'Edición',
+          'Consulta', 'Edición','Agregar'
         ],
         text: '',
         search: '',
