@@ -19,7 +19,7 @@
       <template v-slot:extension>
         <v-tabs v-model="tab" align-tabs="title">
 
-          <v-tab v-for="item in itemsTab" :key="item" :value="item" @click="showAdd(itemsTab)">
+          <v-tab v-for="item in itemsTab" :key="item" :value="item" >
             {{ item }}
           
           </v-tab>
@@ -29,7 +29,7 @@
 
     <v-window v-model="tab">
 
-      <v-window-item v-for="item in itemsTab" :key="item" :value="item">
+      <v-window-item value="Consulta">
         <v-card flat>
 
           <v-data-table :custom-filter="filterOnlyCapsText" :headers="headers" :items="items" :search="search"
@@ -46,9 +46,7 @@
               <v-icon small class="mr-2" @click="viewItem(item)">
                 mdi-eye
               </v-icon>
-              <v-icon small @click="editItem(item)">
-                mdi-lead-pencil
-              </v-icon>
+       
 
             </template>
 
@@ -61,8 +59,46 @@
             New Item
           </v-btn>
         </template>
+       
       </v-window-item>
+    <v-window-item value="Agregar" >
+<v-btn @click="showAdd(itemsTab)">
+  Agregar
+</v-btn>
+    </v-window-item>
 
+ <v-window-item value="Edición" >
+  <v-card flat>
+
+<v-data-table :custom-filter="filterOnlyCapsText" :headers="headers" :items="items" :search="search"
+  :item-value="name">
+
+  <template v-slot:top>
+    <v-text-field v-model="search" class="pa-2" label="Search">
+
+    </v-text-field>
+
+  </template>
+
+  <template v-slot:[`item.actions`]="{ item }">
+ 
+    <v-icon small @click="editItem(item)">
+      mdi-lead-pencil
+    </v-icon>
+
+  </template>
+
+</v-data-table>
+
+</v-card>
+
+<template v-slot:activator="{ on, attrs }">
+<v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+  New Item
+</v-btn>
+</template>
+
+        </v-window-item>
     </v-window>
 
   </v-card>
@@ -318,7 +354,7 @@ export default {
         $event.preventDefault();
       }
     },
-    showAdd(itemsTab, iye){
+    showAdd(itemsTab){
       if (itemsTab[2]==='Agregar') {
         this.dialog =true
         this.view =true
