@@ -19,9 +19,9 @@
       <template v-slot:extension>
         <v-tabs v-model="tab" align-tabs="title">
 
-          <v-tab v-for="item in itemsTab" :key="item" :value="item">
+          <v-tab v-for="item in itemsTab" :key="item" :value="item" @click="showAdd(itemsTab)">
             {{ item }}
-
+          
           </v-tab>
         </v-tabs>
       </template>
@@ -316,6 +316,12 @@ export default {
       let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
       if ((keyCode < 48 || keyCode > 57)) {
         $event.preventDefault();
+      }
+    },
+    showAdd(itemsTab, iye){
+      if (itemsTab[2]==='Agregar') {
+        this.dialog =true
+        this.view =true
       }
     }
   },
