@@ -19,9 +19,9 @@
       <template v-slot:extension>
         <v-tabs v-model="tab" align-tabs="title">
 
-          <v-tab v-for="item in itemsTab" :key="item" :value="item" >
+          <v-tab v-for="item in itemsTab" :key="item" :value="item">
             {{ item }}
-          
+
           </v-tab>
         </v-tabs>
       </template>
@@ -46,7 +46,7 @@
               <v-icon small class="mr-2" @click="viewItem(item)">
                 mdi-eye
               </v-icon>
-       
+
 
             </template>
 
@@ -59,51 +59,52 @@
             New Item
           </v-btn>
         </template>
-       
+
       </v-window-item>
-    <v-window-item value="Agregar" >
-<v-btn @click="showAdd(itemsTab)">
-  Agregar
-</v-btn>
-    </v-window-item>
+      <v-window-item value="Agregar">
+        <v-btn @click="showAdd()">
+          Agregar
+        </v-btn>
+      </v-window-item>
 
- <v-window-item value="Edición" >
-  <v-card flat>
+      <v-window-item value="Edición">
+        <v-card flat>
 
-<v-data-table :custom-filter="filterOnlyCapsText" :headers="headers" :items="items" :search="search"
-  :item-value="name">
+          <v-data-table :custom-filter="filterOnlyCapsText" :headers="headers" :items="items" :search="search"
+            :item-value="name">
 
-  <template v-slot:top>
-    <v-text-field v-model="search" class="pa-2" label="Search">
+            <template v-slot:top>
+              <v-text-field v-model="search" class="pa-2" label="Search">
 
-    </v-text-field>
+              </v-text-field>
 
-  </template>
+            </template>
 
-  <template v-slot:[`item.actions`]="{ item }">
- 
-    <v-icon small @click="editItem(item)">
-      mdi-lead-pencil
-    </v-icon>
+            <template v-slot:[`item.actions`]="{ item }">
 
-  </template>
+              <v-icon small @click="editItem(item)">
+                mdi-lead-pencil
+              </v-icon>
 
-</v-data-table>
+            </template>
 
-</v-card>
+          </v-data-table>
 
-<template v-slot:activator="{ on, attrs }">
-<v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-  New Item
-</v-btn>
-</template>
+        </v-card>
 
-        </v-window-item>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            New Item
+          </v-btn>
+        </template>
+
+      </v-window-item>
     </v-window>
 
   </v-card>
 
   <v-dialog v-model="dialog" max-width="500px">
+    
     <v-card>
       <v-card-title>
         <span class="text-h5">{{ formTitle }}</span>
@@ -113,35 +114,38 @@
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field v-model="editedItem.name" label="name" required></v-text-field>
+              <v-text-field v-model="editedItem.name" label="name" 
+></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field v-model="editedItem.cores" label="Cores" required @keypress="onlyNumber"></v-text-field>
+              <v-text-field v-model="editedItem.cores"  label="Cores" 
+ required @keypress="onlyNumber"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field v-model="editedItem.threads" label="Threads" required @keypress="onlyNumber"></v-text-field>
+              <v-text-field v-model="editedItem.threads" label="Threads"  @keypress="onlyNumber"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field v-model="editedItem.baseClock" label="Base clock" required></v-text-field>
+              <v-text-field v-model="editedItem.baseClock" label="Base clock"  required></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field v-model="editedItem.boostClock" label="Boost clock" required></v-text-field>
+              <v-text-field v-model="editedItem.boostClock" label="Boost clock" ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field v-model="editedItem.tdp" label="TDP (W)" required></v-text-field>
+              <v-text-field v-model="editedItem.tdp" label="TDP (W)"  ></v-text-field>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
-
+    
       <v-card-actions v-show="view === true">
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="close">
+        <v-btn v-show="view === true" color="blue darken-1" text @click="close">
           Cancel
         </v-btn>
-        <v-btn color="blue darken-1" text @click="save">
+          <v-btn color="blue darken-1" text @click="formValid(editedItem)" >
           Save
         </v-btn>
+        
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -157,8 +161,9 @@
   </v-dialog>
 </template>
 
-
 <script>
+import { required, minLength, between } from 'vuelidate/lib/validators'
+
 export default {
 
   data() {
@@ -167,9 +172,11 @@ export default {
       tab: null,
       dialog: false,
       dialogOk: false,
+      formIsValid: true,
       view: false,
       items: [],
       editedIndex: -1,
+      retorno: 0,
       editedItem: {
         name: '',
         cores: 0,
@@ -190,6 +197,7 @@ export default {
       itemsTab: [
         'Consulta', 'Edición', 'Agregar'
       ],
+
       text: '',
       search: '',
       headers: [
@@ -316,64 +324,98 @@ export default {
 
     }
   },
-  methods: {
-
-
-    viewItem(item) {
-      this.editedIndex = this.items.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-
-      this.dialog = true
-      this.view = false
-    },
-    editItem(item) {
-      this.editedIndex = this.items.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.view = true
-      this.dialog = true
-    },
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.items[this.editedIndex], this.editedItem)
-      } else {
-        this.items.push(this.editedItem)
-      }
-      this.close()
-      this.dialogOk = true
-    },
-    onlyNumber($event) {
-      let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
-      if ((keyCode < 48 || keyCode > 57)) {
-        $event.preventDefault();
-      }
-    },
-    showAdd(itemsTab){
-      if (itemsTab[2]==='Agregar') {
-        this.dialog =true
-        this.view =true
-      }
+  validations: {
+    name: {
+      required, $autoDirty: true
     }
   },
-  watch: {
-    dialog(val) {
-      val || this.close()
+    methods: {
+
+
+      viewItem(item) {
+        this.editedIndex = this.items.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+
+        this.dialog = true
+        this.view = false
+      },
+      editItem(item) {
+        this.editedIndex = this.items.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.view = true
+        this.dialog = true
+      },
+      close() {
+        this.dialog = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
+      save() {
+
+        if (this.editedIndex > -1 ) {
+          Object.assign(this.items[this.editedIndex], this.editedItem)
+        } else {
+
+          this.items.push(this.editedItem)
+        }
+        this.close()
+        this.dialogOk = true
+      },
+      onlyNumber($event) {
+        let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+        if ((keyCode < 48 || keyCode > 57)) {
+          $event.preventDefault();
+        }
+      },
+      showAdd(){
+        this.dialog = true
+        this.view = true
+      },
+      formValid(item){
+        if (item.name == '') {
+          this.retorno=1
+          alert('Cores esta vacio')
+        }
+        if (item.threads == 0) {
+          this.retorno =1
+          alert('threads esta vacio')
+        }
+        if (item.baseClock == '') {
+          this.retorno=1
+          alert('baseClock esta vacio')
+        }
+        if (item.boostClock == '') {
+          this.retorno =1
+          alert('boostClock esta vacio')
+        }
+        if (item.tdp == '') {
+          this.retorno =1
+          alert('tdp esta vacio')
+        }
+        if (this.retorno ==0) {
+          alert('guardando')
+          this.save()
+        }
+
+      },
+      submitForm() {
+        alert(name)
+      }
     },
+    watch: {
+      dialog(val) {
+        val || this.close()
+      },
 
-  },
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
-  },
-
-
-}
+    computed: {
+      formTitle() {
+        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      },
+    },
+    
+  }
 
 </script>
